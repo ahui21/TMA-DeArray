@@ -2,6 +2,11 @@ import cv2
 import cv2.cv as cv
 import numpy as np
 
+x = int(input("Enter a number: "))
+y = int(input("Enter another number: "))
+
+print x + y
+
 imgLoc = raw_input("Enter the location of the picture file to be analyzed: ")
 estimate = int(input("Enter a rough estimate for the number of cores in this TMA: "))
 
@@ -9,7 +14,7 @@ img = cv2.imread(imgLoc, 0)
 img = cv2.medianBlur(img, 5)
 cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-print 'Circles with radius ', estimate, ' found.\n'
+print 'Circles with radius ', estimate, ' found.'
 
 circles = cv2.HoughCircles(img, cv.CV_HOUGH_GRADIENT, 1, 20, param1 = 50, param2 = 30, minRadius = 0, maxRadius = 0)
 

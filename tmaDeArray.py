@@ -17,63 +17,37 @@ class TMADeArray:
 
 	height, width = img.shape[:2]
 
-	meanRadius = int(math.sqrt((height * width) / (4 * estimate)))
+	meanRadiusEstimate = int(math.sqrt((height * width) / (4 * estimate)))
 
-	print 'meanRadius: ', meanRadius
+	print 'meanRadius: ', meanRadiusEstimate
 
-	circles = cv2.HoughCircles(img, cv.CV_HOUGH_GRADIENT, 1, meanRadius, param1 = 50, param2 = 13, minRadius = int(meanRadius * 0.75), maxRadius = int(meanRadius * 1.25))
+	circles = cv2.HoughCircles(img, cv.CV_HOUGH_GRADIENT, 1, int(meanRadiusEstimate * 0.5), param1 = 50, param2 = 50, minRadius = 0, maxRadius = int(1.5 * meanRadiusEstimate))
 
 	circles = np.uint16(np.around(circles))
 
-	rows = np.zeros(height).astype('int')
-	print rows
-	cols = np.zeros(width).astype('int')
-	print cols
-	# rows = []
-	# for i in range(height):
-#		rows.append(0)
-#	cols = []
-#	for i in range(width):
-#		cols.append(0)
+	tempRadii = list();
 
 	for i in circles[0,:]:
-		rows[i[1]] += 1
-		cols[i[0]] += 1
+		tempRadii.append(i[2])
 
-	print rows
-	print cols
+	print tempRadii
 
-	for i in rows[0,50]:
-		if i > 1:
-			cv2.line(preProcessedImg, (0, i[1]), (height, i[1]), (0,0,255), 3)
-	for i in rows[100,150]:
-		if i > 1:
-			cv2.line(preProcessedImg, (0, i[1]), (height, i[1]), (0,0,255), 3)
-	for i in rows[200,250]:
-		if i > 1:
-			cv2.line(preProcessedImg, (0, i[1]), (height, i[1]), (0,0,255), 3)
-	for i in rows[300,350]:
-		if i > 1:
-			cv2.line(preProcessedImg, (0, i[1]), (height, i[1]), (0,0,255), 3)
+	tempRadiiCount = list();
 
-	for i in cols[0,50]:
-		if i > 1:
-			cv2.line(preProcessedImg, (i[0], 0), (i[0], width), (0,0,255), 3)
-	for i in cols[100,150]:
-		if i > 1:
-			cv2.line(preProcessedImg, (i[0], 0), (i[0], width), (0,0,255), 3)
-	for i in cols[200,250]:
-		if i > 1:
-			cv2.line(preProcessedImg, (i[0], 0), (i[0], width), (0,0,255), 3)
-	for i in cols[300,350]:
-		if i > 1:
-			cv2.line(preProcessedImg, (i[0], 0), (i[0], width), (0,0,255), 3)
+	for i in range(0, int(1.5*meanRadiusEstimate)):
+		tempRadiiCount.append(tempRadii.count(i))
+
+	print tempRadiiCount, 'lies', max(tempRadiiCount)
+
+	newRadii = tempRadiiCount.index(max(tempRadiiCount))
+
+	circles = cv2.HoughCircles(img, cv.CV_HOUGH_GRADIENT, 1, int(meanRadiusEstimate * 0.5), param1 = 50, param2 = 13, minRadius = int(0.75 * newRadii), maxRadius = int(1.25 * newRadii))
+
+	circles = np.uint16(np.around(circles))
 
 	for i in circles[0,:]:
 		# draw the outer circle
 		cv2.circle(preProcessedImg, (i[0], i[1]), i[2], (0, 255, 0), 2)
-		#draw the center of the circle
-		cv2.circle(preProcessedImg, (i[0], i[1]), 2, (0, 0, 255), 3)
 	
 	print 'Circles with radius', estimate, 'found.\n'
 

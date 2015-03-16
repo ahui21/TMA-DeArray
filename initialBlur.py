@@ -77,13 +77,9 @@ class initialBlur:
 		if (n**2) > maxOfList:
 			cont = False
 
-	print freqList
-
-	print listOfRadii
-
 	meanRadiusEstimate = listOfRadii[int(len(listOfRadii)/2)]
 
-	circles = cv2.HoughCircles(tempimg, cv.CV_HOUGH_GRADIENT, 1, int(meanRadiusEstimate * 0.5), param1 = 50, param2 = 13, minRadius = listOfRadii[1], maxRadius = listOfRadii[len(listOfRadii) - 1])
+	circles = cv2.HoughCircles(tempimg, cv.CV_HOUGH_GRADIENT, 1, int(meanRadiusEstimate * 1.5), param1 = 50, param2 = 13, minRadius = listOfRadii[1], maxRadius = listOfRadii[len(listOfRadii) - 1])
 
 	circles = np.uint16(np.around(circles))
 
@@ -93,7 +89,9 @@ class initialBlur:
 	
 	cv2.imshow('detected circles', preProcessedImg)
 
-	cv2.drawContours(cimg, contours, -1, (0,255,0), 3)
+	for cnt in contours:
+		cv2.drawContours(cimg, [cnt], 0, 0, -1)
+	# cv2.drawContours(cimg, contours, -1, (0,255,0), 3)
 	cv2.imshow('contours',cimg)
 	cv2.imshow('0', edged)
 	cv2.waitKey(0)

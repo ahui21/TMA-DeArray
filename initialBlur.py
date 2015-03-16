@@ -92,6 +92,8 @@ class initialBlur:
 	for cnt in contours:
 		cv2.drawContours(cimg, [cnt], 0, 0, -1)
 	# cv2.drawContours(cimg, contours, -1, (0,255,0), 3)
+	cimg = cv2.GaussianBlur(cimg,(height,width),0)
+	
 	cv2.imshow('contours',cimg)
 	cv2.imshow('0', edged)
 	cv2.waitKey(0)
